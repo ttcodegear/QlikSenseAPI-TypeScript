@@ -1,6 +1,7 @@
 # QlikSenseAPI-TypeScript
 
 npm list -g
+
 /usr/local/lib
 
 └── typescript@5.4.5

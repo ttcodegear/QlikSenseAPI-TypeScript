@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@qlik/api": "^1.4.1",
+    "@types/node": "^20.12.8"
+  }
+}

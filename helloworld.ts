@@ -4,8 +4,8 @@ import { NxPage, NxDataPage } from "@qlik/api/qix";
 
 const hostConfig: HostConfig = {
   authType: "apikey",
-  host: "xxx.yy.qlikcloud.com",
-  apiKey: "eyJhbG............"
+  host: "xxxx.yy.qlikcloud.com",
+  apiKey: "eyJhb......"
 };
 auth.setDefaultHostConfig(hostConfig);
 
@@ -35,11 +35,11 @@ async function main() {
       }
     };
     const lo_hypercube = await app.createSessionObject(listobject_def);
-    const lo_layout = await lo_hypercube.getLayout();
+    let lo_layout = await lo_hypercube.getLayout();
     const lo_width = lo_layout.qListObject.qSize.qcx;
     const lo_height = (lo_width==0) ? 1 : Math.floor(10000 / lo_width);
     lo_layout.qListObject.qDataPages = [];
-    async function getAllList(w, h, lr) {
+    async function getAllList(w: number, h: number, lr: number) {
       const requestPage: NxPage[] = [{qTop: lr, qLeft: 0, qWidth: w, qHeight: h}];
       const dataPages: NxDataPage[] = await lo_hypercube.getListObjectData("/qListObjectDef", requestPage);
       lo_layout.qListObject.qDataPages.push(dataPages[0]);
@@ -73,12 +73,14 @@ async function main() {
       }
     }
     // Register an event listener for change events
-    lo_hypercube.on("changed", () => {
+    async function listobjectChanged() {
       console.log("listobject has beed changed.");
+      lo_layout = await lo_hypercube.getLayout();
       lo_layout.qListObject.qDataPages = [];
-      getAllList(lo_width, lo_height, 0);
-    });
-    getAllList(lo_width, lo_height, 0);
+      await getAllList(lo_width, lo_height, 0);
+    }
+    lo_hypercube.on("changed", listobjectChanged);
+    await getAllList(lo_width, lo_height, 0);
 
     const hypercube_def = {
       qInfo: {
@@ -116,12 +118,11 @@ async function main() {
       }
     };
     const hc_hypercube = await app.createSessionObject(hypercube_def);
-    const hc_layout = await hc_hypercube.getLayout();
+    let hc_layout = await hc_hypercube.getLayout();
     const hc_width = hc_layout.qHyperCube.qSize.qcx;
-    //let hc_width = 10;
     const hc_height = (hc_width==0) ? 1 : Math.floor(10000 / hc_width);
     hc_layout.qHyperCube.qDataPages = [];
-    async function getAllData(w, h, lr) {
+    async function getAllData(w: number, h: number, lr: number) {
       const requestPage: NxPage[] = [{qTop: lr, qLeft: 0, qWidth: w, qHeight: h}];
       const dataPages: NxDataPage[] = await hc_hypercube.getHyperCubeData("/qHyperCubeDef", requestPage);
       hc_layout.qHyperCube.qDataPages.push(dataPages[0]);
@@ -157,12 +158,20 @@ async function main() {
       }
     }
     // Register an event listener for change events
-    hc_hypercube.on("changed", () => {
+    async function hypercudeChanged() {
       console.log("hypercube has beed changed.");
+      hc_layout = await hc_hypercube.getLayout();
       hc_layout.qHyperCube.qDataPages = [];
-      getAllData(hc_width, hc_height, 0);
-    });
+      await getAllData(hc_width, hc_height, 0);;
+    }
+    hc_hypercube.on("changed", hypercudeChanged);
     await getAllData(hc_width, hc_height, 0);
+
+    //const testok = await field.selectValues([{ qText: "関東支店" }]);
+    //function delay(ms: number) {
+    //  return new Promise( resolve => setTimeout(resolve, ms) );
+    //}
+    //await delay(10000);
   } catch(e) {
     console.error(e);
   } finally {

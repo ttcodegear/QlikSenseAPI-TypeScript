@@ -5,7 +5,7 @@ import { NxPage, NxDataPage } from "@qlik/api/qix";
 const hostConfig: HostConfig = {
   authType: "apikey",
   host: "xxxx.yy.qlikcloud.com",
-  apiKey: "eyJhb......"
+  apiKey: "eyJhbG....."
 };
 auth.setDefaultHostConfig(hostConfig);
 
@@ -108,7 +108,7 @@ async function main() {
             qSortByLoadOrder: 0,
             qSortByExpression: 0,
             qExpression: { "qv": " " }
-      }
+          }
         }],
         qSuppressZero: false,
         qSuppressMissing: false,

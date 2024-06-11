@@ -5,7 +5,7 @@ import { NxPage, NxDataPage } from "@qlik/api/qix";
 const hostConfig: HostConfig = {
   authType: "apikey",
   host: "xxxx.yy.qlikcloud.com",
-  apiKey: "eyJhbGci...."
+  apiKey: "eyJhbGc...."
 };
 auth.setDefaultHostConfig(hostConfig);
 
@@ -52,6 +52,7 @@ async function main() {
     }
     function renderingList() {
       var hc = lo_layout.qListObject, allListPages = hc.qDataPages;
+      console.log(hc.qDimensionInfo.qFallbackTitle);
       for(const p of allListPages) {
         for(let r = 0; r < p.qMatrix.length; r++) {
           for(let c = 0; c < p.qMatrix[r].length; c++) {
@@ -59,7 +60,7 @@ async function main() {
             let field_data = cell.qElemNumber + ",";
             if( cell.qState=="S" )
               field_data += "(Selected)";
-            if( cell.qElemNumber == -2 )
+            if( cell.qElemNumber == -2 ) // -2: the cell is a Null cell.
               field_data += "-";
             else if( cell.hasOwnProperty("qText") )
               field_data += cell.qText;
@@ -145,7 +146,7 @@ async function main() {
           for(let c = 0; c < p.qMatrix[r].length; c++) {
             const cell = p.qMatrix[r][c];
             let field_data = "";
-            if( cell.qElemNumber == -2 )
+            if( cell.qElemNumber == -2 ) // -2: the cell is a Null cell.
               field_data += "-";
             else if( cell.hasOwnProperty("qText") )
               field_data += cell.qText;
@@ -168,12 +169,6 @@ async function main() {
     hc_hypercube.on("changed", hypercudeChanged);
     await getAllData(hc_width, hc_height, 0);
     await app.destroySessionObject(hc_hypercube.id);
-
-    //const testok = await field.selectValues([{ qText: "関東支店" }]);
-    //function delay(ms: number) {
-    //  return new Promise( resolve => setTimeout(resolve, ms) );
-    //}
-    //await delay(10000);
   } catch(e) {
     console.error(e);
   } finally {

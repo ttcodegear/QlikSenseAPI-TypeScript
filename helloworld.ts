@@ -5,7 +5,7 @@ import { NxPage, NxDataPage } from "@qlik/api/qix";
 const hostConfig: HostConfig = {
   authType: "apikey",
   host: "xxxx.yy.qlikcloud.com",
-  apiKey: "eyJhbGc...."
+  apiKey: "eyJhbGci...."
 };
 auth.setDefaultHostConfig(hostConfig);
 
@@ -45,11 +45,18 @@ async function main() {
       lo_layout.qListObject.qDataPages.push(dataPages[0]);
       var n = dataPages[0].qMatrix.length;
       if(lr + n >= lo_layout.qListObject.qSize.qcy) {
-        renderingList();
         return;
       }
       await getAllList(w, h, lr + n);
     }
+    // Register an event listener for change events
+    async function listobjectChanged() {
+      console.log("listobject has beed changed.");
+      //lo_layout = await lo_hypercube.getLayout();
+      //lo_layout.qListObject.qDataPages = [];
+      //await getAllList(lo_width, lo_height, 0);
+    }
+    lo_hypercube.on("changed", listobjectChanged);
     function renderingList() {
       var hc = lo_layout.qListObject, allListPages = hc.qDataPages;
       console.log(hc.qDimensionInfo.qFallbackTitle);
@@ -73,15 +80,8 @@ async function main() {
         }
       }
     }
-    // Register an event listener for change events
-    async function listobjectChanged() {
-      console.log("listobject has beed changed.");
-      //lo_layout = await lo_hypercube.getLayout();
-      //lo_layout.qListObject.qDataPages = [];
-      //await getAllList(lo_width, lo_height, 0);
-    }
-    lo_hypercube.on("changed", listobjectChanged);
     await getAllList(lo_width, lo_height, 0);
+    renderingList();
     await app.destroySessionObject(lo_hypercube.id);
 
     const hypercube_def = {
@@ -130,11 +130,18 @@ async function main() {
       hc_layout.qHyperCube.qDataPages.push(dataPages[0]);
       const n = dataPages[0].qMatrix.length;
       if(lr + n >= hc_layout.qHyperCube.qSize.qcy) {
-        renderingHyperCube();
         return;
       }
       await getAllData(w, h, lr + n);
     }
+    // Register an event listener for change events
+    async function hypercudeChanged() {
+      console.log("hypercube has beed changed.");
+      //hc_layout = await hc_hypercube.getLayout();
+      //hc_layout.qHyperCube.qDataPages = [];
+      //await getAllData(hc_width, hc_height, 0);
+    }
+    hc_hypercube.on("changed", hypercudeChanged);
     function renderingHyperCube() {
       const hc = hc_layout.qHyperCube, allDataPages = hc.qDataPages;
       for(const dim of hc.qDimensionInfo)
@@ -159,15 +166,8 @@ async function main() {
         }
       }
     }
-    // Register an event listener for change events
-    async function hypercudeChanged() {
-      console.log("hypercube has beed changed.");
-      //hc_layout = await hc_hypercube.getLayout();
-      //hc_layout.qHyperCube.qDataPages = [];
-      //await getAllData(hc_width, hc_height, 0);;
-    }
-    hc_hypercube.on("changed", hypercudeChanged);
     await getAllData(hc_width, hc_height, 0);
+    renderingHyperCube();
     await app.destroySessionObject(hc_hypercube.id);
   } catch(e) {
     console.error(e);

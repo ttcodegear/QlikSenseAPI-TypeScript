@@ -43,7 +43,7 @@ async function main() {
       const requestPage: NxPage[] = [{qTop: lr, qLeft: 0, qWidth: w, qHeight: h}];
       const dataPages: NxDataPage[] = await lo_hypercube.getListObjectData("/qListObjectDef", requestPage);
       lo_layout.qListObject.qDataPages.push(dataPages[0]);
-      var n = dataPages[0].qMatrix.length;
+      const n = dataPages[0].qMatrix.length;
       if(lr + n >= lo_layout.qListObject.qSize.qcy) {
         return;
       }
@@ -58,7 +58,7 @@ async function main() {
     }
     lo_hypercube.on("changed", listobjectChanged);
     function renderingList() {
-      var hc = lo_layout.qListObject, allListPages = hc.qDataPages;
+      const hc = lo_layout.qListObject, allListPages = hc.qDataPages;
       console.log(hc.qDimensionInfo.qFallbackTitle);
       for(const p of allListPages) {
         for(let r = 0; r < p.qMatrix.length; r++) {

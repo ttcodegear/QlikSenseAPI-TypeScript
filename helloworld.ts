@@ -16,9 +16,9 @@ async function main() {
     session = qix.openAppSession({ appId: appid, withoutData: false });
     const app = await session.getDoc();
 
+    await app.clearAll();
     const field = await app.getField("支店名");
     const select_ok = await field.selectValues([{ qText: "関東支店" }, { qText: "関西支店" }]);
-    //console.log(select_ok);
 
     const listobject_def = {
       qInfo: {

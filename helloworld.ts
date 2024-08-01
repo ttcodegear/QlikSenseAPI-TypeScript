@@ -1,11 +1,12 @@
 import { auth, qix } from "@qlik/api";
 import { HostConfig } from "@qlik/api/auth";
 import { NxPage, NxDataPage } from "@qlik/api/qix";
+import * as crypto from "crypto";
 
 const hostConfig: HostConfig = {
   authType: "apikey",
   host: "xxxx.yy.qlikcloud.com",
-  apiKey: "eyJhbGci...."
+  apiKey: "eyJhbGciOi...."
 };
 auth.setDefaultHostConfig(hostConfig);
 
@@ -13,7 +14,7 @@ async function main() {
   const appid = "72a3da4b-1093-4c4c-840d-1ee44fbcbb91";
   let session = null;
   try {
-    session = qix.openAppSession({ appId: appid, withoutData: false });
+    session = qix.openAppSession({ appId: appid, withoutData: false, identity: crypto.randomUUID() });
     const app = await session.getDoc();
 
     await app.clearAll();

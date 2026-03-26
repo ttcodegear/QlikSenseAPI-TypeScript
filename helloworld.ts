@@ -37,15 +37,15 @@ async function main() {
     };
     const lo_hypercube = await app.createSessionObject(listobject_def);
     let lo_layout = await lo_hypercube.getLayout();
-    const lo_width = lo_layout.qListObject.qSize.qcx;
+    const lo_width = lo_layout.qListObject!.qSize!.qcx!;
     const lo_height = (lo_width==0) ? 1 : Math.floor(10000 / lo_width);
-    lo_layout.qListObject.qDataPages = [];
+    lo_layout.qListObject!.qDataPages! = [];
     async function getAllList(w: number, h: number, lr: number) {
       const requestPage: NxPage[] = [{qTop: lr, qLeft: 0, qWidth: w, qHeight: h}];
       const dataPages: NxDataPage[] = await lo_hypercube.getListObjectData("/qListObjectDef", requestPage);
-      lo_layout.qListObject.qDataPages.push(dataPages[0]);
-      const n = dataPages[0].qMatrix.length;
-      if(lr + n >= lo_layout.qListObject.qSize.qcy) {
+      lo_layout.qListObject!.qDataPages!.push(dataPages[0]);
+      const n = dataPages[0].qMatrix!.length;
+      if(lr + n >= lo_layout.qListObject!.qSize!.qcy!) {
         return;
       }
       await getAllList(w, h, lr + n);
@@ -59,21 +59,21 @@ async function main() {
     }
     lo_hypercube.on("changed", listobjectChanged);
     function renderingList() {
-      const hc = lo_layout.qListObject, allListPages = hc.qDataPages;
-      console.log(hc.qDimensionInfo.qFallbackTitle);
+      const hc = lo_layout.qListObject!, allListPages = hc!.qDataPages!;
+      console.log(hc!.qDimensionInfo!.qFallbackTitle!);
       for(const p of allListPages) {
-        for(let r = 0; r < p.qMatrix.length; r++) {
-          for(let c = 0; c < p.qMatrix[r].length; c++) {
-            const cell = p.qMatrix[r][c];
-            let field_data = cell.qElemNumber + ",";
+        for(let r = 0; r < p.qMatrix!.length; r++) {
+          for(let c = 0; c < p.qMatrix![r].length; c++) {
+            const cell = p.qMatrix![r][c];
+            let field_data = cell.qElemNumber! + ",";
             if( cell.qState=="S" )
               field_data += "(Selected)";
-            if( cell.qElemNumber == -2 ) // -2: the cell is a Null cell.
+            if( cell.qElemNumber! == -2 ) // -2: the cell is a Null cell.
               field_data += "-";
             else if( cell.hasOwnProperty("qText") )
-              field_data += cell.qText;
+              field_data += cell.qText!;
             else if( cell.hasOwnProperty("qNum") )
-              field_data += cell.qNum;
+              field_data += cell.qNum!;
             else
               field_data += "";
             console.log(field_data);
@@ -122,15 +122,15 @@ async function main() {
     };
     const hc_hypercube = await app.createSessionObject(hypercube_def);
     let hc_layout = await hc_hypercube.getLayout();
-    const hc_width = hc_layout.qHyperCube.qSize.qcx;
+    const hc_width = hc_layout.qHyperCube!.qSize!.qcx!;
     const hc_height = (hc_width==0) ? 1 : Math.floor(10000 / hc_width);
-    hc_layout.qHyperCube.qDataPages = [];
+    hc_layout.qHyperCube!.qDataPages! = [];
     async function getAllData(w: number, h: number, lr: number) {
       const requestPage: NxPage[] = [{qTop: lr, qLeft: 0, qWidth: w, qHeight: h}];
       const dataPages: NxDataPage[] = await hc_hypercube.getHyperCubeData("/qHyperCubeDef", requestPage);
-      hc_layout.qHyperCube.qDataPages.push(dataPages[0]);
-      const n = dataPages[0].qMatrix.length;
-      if(lr + n >= hc_layout.qHyperCube.qSize.qcy) {
+      hc_layout.qHyperCube!.qDataPages!.push(dataPages[0]);
+      const n = dataPages[0].qMatrix!.length;
+      if(lr + n >= hc_layout.qHyperCube!.qSize!.qcy!) {
         return;
       }
       await getAllData(w, h, lr + n);
@@ -144,22 +144,22 @@ async function main() {
     }
     hc_hypercube.on("changed", hypercudeChanged);
     function renderingHyperCube() {
-      const hc = hc_layout.qHyperCube, allDataPages = hc.qDataPages;
-      for(const dim of hc.qDimensionInfo)
-        console.log(dim.qFallbackTitle);
-      for(const mes of hc.qMeasureInfo)
-        console.log(mes.qFallbackTitle);
+      const hc = hc_layout.qHyperCube!, allDataPages = hc.qDataPages!;
+      for(const dim of hc.qDimensionInfo!)
+        console.log(dim.qFallbackTitle!);
+      for(const mes of hc.qMeasureInfo!)
+        console.log(mes.qFallbackTitle!);
       for(const p of allDataPages) {
-        for(let r = 0; r < p.qMatrix.length; r++) {
-          for(let c = 0; c < p.qMatrix[r].length; c++) {
-            const cell = p.qMatrix[r][c];
+        for(let r = 0; r < p.qMatrix!.length; r++) {
+          for(let c = 0; c < p.qMatrix![r].length; c++) {
+            const cell = p.qMatrix![r][c];
             let field_data = "";
-            if( cell.qElemNumber == -2 ) // -2: the cell is a Null cell.
+            if( cell.qElemNumber! == -2 ) // -2: the cell is a Null cell.
               field_data += "-";
             else if( cell.hasOwnProperty("qText") )
-              field_data += cell.qText;
+              field_data += cell.qText!;
             else if( cell.hasOwnProperty("qNum") )
-              field_data += cell.qNum;
+              field_data += cell.qNum!;
             else
               field_data += "";
             console.log(field_data);
